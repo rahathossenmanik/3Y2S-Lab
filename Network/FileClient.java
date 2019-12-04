@@ -1,21 +1,34 @@
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Scanner;
 
-public class Client {
-  public static void main(String[] argv) throws Exception {
-    Socket sock = new Socket("192.168.1.1", 23456);
-    byte[] mybytearray = new byte[1024];
-    InputStream is = sock.getInputStream();
-    FileOutputStream fos = new FileOutputStream("Server.txt");
-    BufferedOutputStream bos = new BufferedOutputStream(fos);
-    int bytesRead = is.read(mybytearray, 0, mybytearray.length);
-    bos.write(mybytearray, 0, bytesRead);
-    PrintWriter out = new PrintWriter(sock.getOutputStream(), true);
-    out.println("File Recieved Successfully.");
-    bos.close();
-    sock.close();
-  }
+public class FileClient{
+	@SuppressWarnings("resource")
+	public static void main(String []args) throws UnknownHostException, IOException {
+		Socket sock = new Socket("localhost", 34568);
+		String FileName = "Manik.txt";
+		File MyFile = new File(FileName);
+		int FileSize = (int) MyFile.length();
+		OutputStream os = sock.getOutputStream();
+		PrintWriter pr = new PrintWriter(sock.getOutputStream(), true);
+		BufferedInputStream bis = new BufferedInputStream(new FileInputStream(MyFile));
+		Scanner in = new Scanner(sock.getInputStream());
+		
+		pr.println(FileName);
+		pr.println(FileSize);
+		while(true) {
+			byte []filebyte = new byte[FileSize];
+			bis.read(filebyte, 0, filebyte.length);
+			os.write(filebyte, 0, filebyte.length);
+			System.out.println("Server Response: " + in.nextLine());
+			os.flush();
+			sock.close();
+		}
+	}
 }

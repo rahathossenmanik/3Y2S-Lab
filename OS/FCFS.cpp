@@ -1,26 +1,26 @@
 #include<bits/stdc++.h>
+using namespace std;
 int main(){
-    int n, bt[20], wt[20], avwt=0, i, j;
-    printf("Enter total number of processes(maximum 20): ");
-    scanf("%d",&n);
+    int n, bt[20], wt[20], tat[20], avwt=0, avtat=0, i;
+    cout<<"Enter Number of Processes: ";
+    cin>>n;
 
-    printf("Enter Process Burst Time:\n");
-    for(i=0;i<n;i++)
-    {
-        printf("P[%d]:",i+1);
-        scanf("%d",&bt[i]);
+    cout<<"Enter Process Burst Time:"<<endl;
+    for(i=0;i<n;i++){
+        cout<<"P["<<i+1<<"]: ";
+        cin>>bt[i];
     }
 
-    printf("\nProcess\t\tBurst Time\tWaiting Time");
-    for(i=0;i<n;i++)
-    {
-        wt[i]=0;
-        for(j=0;j<i;j++)wt[i]= wt[i]+bt[j];
-        avwt+=wt[i];
-        printf("\nP[%d]\t\t%d\t\t%d",i+1,bt[i],wt[i]);
-
+    wt[0]=0;
+    cout<<endl<<"Process\t\tBurst Time\tWaiting Time\tTurnaround Time"<<endl;
+    for(i=0;i<n;i++){
+        wt[i+1]= wt[i]+bt[i];
+        tat[i]= wt[i]+bt[i];
+        avwt=avwt+wt[i];
+        avtat=avtat+tat[i];
+        cout<<"P["<<i+1<<"]\t\t"<<bt[i]<<"\t\t"<<wt[i]<<"\t\t"<<tat[i]<<endl;
     }
-    printf("\n\nAverage Waiting Time:%d",avwt/i);
-
+    cout<<"Average Waiting Time: "<<avwt/n<<endl;
+    cout<<"Average Turnaround Time: "<<avtat/n<<endl;
     return 0;
 }
