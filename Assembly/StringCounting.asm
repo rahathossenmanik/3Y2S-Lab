@@ -73,7 +73,7 @@ MAIN PROC
     INTER: CMP AL, 'Z'
         JL CHAR
         CMP AL, 'a'
-        JG CHAR
+        JGE CHAR
         
     ALL: INC OT
         JMP FOR 
