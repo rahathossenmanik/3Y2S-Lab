@@ -1,8 +1,13 @@
+INCLUDE 'EMU8086.INC'
 .MODEL SMALL
 .STACK 100H
 .DATA
-VL DB '0'
-CN DB '0'
+
+VL DB 0
+CN DB 0
+NO DB 0
+NU DB 0
+OT DB 0
 
 .CODE      
 MOV AX, @DATA
@@ -11,12 +16,20 @@ MOV DS, AX
 MAIN PROC
     MOV VL, 0
     MOV CN, 0
+    MOV NO, 0
+    MOV NU, 0
+    MOV OT, 0
     MOV AH, 1
     FOR: INT 21H
         CMP AL, 0DH
         JE RESULT
-        
         CMP AL, 'A'
+        JL OTHERS
+        CMP AL, 'z'
+        JG OTHERS
+        JMP INTER 
+        
+    CHAR: CMP AL, 'A'
         JE VOWEL
         CMP AL, 'a'
         JE VOWEL
@@ -44,6 +57,26 @@ MAIN PROC
         
     CONSONENT: INC CN
         JMP FOR
+        
+    OTHERS: CMP AL, ' '
+        JNE SPECIAL
+        INC NU
+        JMP FOR
+        
+    SPECIAL: CMP AL, '0'
+        JL ALL
+        CMP AL, '9'
+        JG ALL
+        INC NO
+        JMP FOR
+        
+    INTER: CMP AL, 'Z'
+        JL CHAR
+        CMP AL, 'a'
+        JG CHAR
+        
+    ALL: INC OT
+        JMP FOR 
     
     RESULT:
     
@@ -53,32 +86,54 @@ MAIN PROC
         MOV DL, 0DH
         INT 21H
     
-        MOV AH,2
         ADD VL, 48
-        MOV DL, 'V' 
-        INT 21H
-        MOV DL, 'L' 
-        INT 21H
-        MOV DL, ':' 
-        INT 21H
+        PRINTN
+        PRINT 'VOWEL: '
         MOV DL, VL 
         INT 21H
         
-        MOV AH, 2
         MOV DL, 0AH
         INT 21H
         MOV DL, 0DH
         INT 21H
         
-        MOV AH,2
         ADD CN, 48
-        MOV DL, 'C' 
-        INT 21H
-        MOV DL, 'N' 
-        INT 21H
-        MOV DL, ':' 
-        INT 21H
+        PRINTN
+        PRINT 'CONSONENT: '
         MOV DL, CN 
+        INT 21H
+        
+        MOV DL, 0AH
+        INT 21H
+        MOV DL, 0DH
+        INT 21H
+        
+        ADD NO, 48
+        PRINTN
+        PRINT 'DIGIT: '
+        MOV DL, NO 
+        INT 21H
+        
+        MOV DL, 0AH
+        INT 21H
+        MOV DL, 0DH
+        INT 21H
+        
+        ADD NU, 48
+        PRINTN
+        PRINT 'SPACE: '
+        MOV DL, NU 
+        INT 21H
+        
+        MOV DL, 0AH
+        INT 21H
+        MOV DL, 0DH
+        INT 21H
+        
+        ADD OT, 48
+        PRINTN
+        PRINT 'OTHERS: '
+        MOV DL, OT 
         INT 21H
         
         MOV AH, 4CH
