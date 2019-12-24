@@ -2,7 +2,6 @@
 .STACK 100H
 .DATA
 X DB 80 DUP
-TEMP DB 0
 SIZE DB 0
 
 .CODE      
@@ -22,7 +21,6 @@ MAIN PROC
     EXIT: DEC SI
 
     SORT:
-    MOV TEMP, 0
     MOV BX, SI
     
     EXTER:
